@@ -7,6 +7,7 @@ from keras.optimizers import *
 from sklearn.model_selection import KFold
 from numpy import mean, std
 
+# CNN for solving MNIST (digit) dataset
 
 def visualize(X, Y):
     print('Training set: X=%s Y=%s' % (X.shape, Y.shape))
