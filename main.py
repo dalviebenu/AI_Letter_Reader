@@ -8,6 +8,7 @@ from keras.layers import *
 from keras.optimizers import *
 from sklearn.model_selection import KFold
 from numpy import mean, std, indices
+from keras.models import load_model
 import numpy as np
 from CNN import *
 
@@ -102,6 +103,16 @@ def final_model():
     model.save('final_model_1.h5')
 
 
+def predict_model(name):
+    trainX, trainY, testX, testY = load_data()
+    # prepare pixel data
+    trainX, testX = scale_pixels(trainX, testX)
+    # create, fit, and save model
+    model = load_model(name)
+    _, acc = model.evaluate(testX, testY, verbose=0)
+    print('> %.3f' % (acc * 100.0))
+
+
 if __name__ == '__main__':
     #    run_test_harness()
-    final_model()
+    predict_model('final_model_1.h5')
