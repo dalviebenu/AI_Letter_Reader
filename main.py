@@ -92,5 +92,16 @@ def run_test_harness():
     summarize_performance(scores)
 
 
+def final_model():
+    trainX, trainY, testX, testY = load_data()
+    # prepare pixel data
+    trainX, testX = scale_pixels(trainX, testX)
+    # create, fit, and save model
+    model = create_model()
+    model.fit(trainX, trainY, epochs=10, batch_size=32, verbose=0)
+    model.save('final_model_1.h5')
+
+
 if __name__ == '__main__':
-    run_test_harness()
+    #    run_test_harness()
+    final_model()
