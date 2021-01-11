@@ -201,7 +201,7 @@ def predict_model(name):
 
 
 if __name__ == '__main__':
-    final_model()
-    predict_model('final_model_letters.h5')
-    # run_test_harness()
+    # final_model()
+    # predict_model('final_model_letters.h5')
+    run_test_harness()
     # load_new_data()

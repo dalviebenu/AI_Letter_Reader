@@ -3,7 +3,7 @@ from model import *
 from pathlib import Path
 import scipy as sp
 from keras_preprocessing.image import load_img, img_to_array
-from PIL import Image, ImageFilter
+from PIL import Image, ImageChops
 import os
 
 
@@ -26,8 +26,8 @@ def make_square(file):
     height = img.size[1]
     width = img.size[0]
     base = height if height >= width else width
-    background = Image.new('RGBA', (base, base + 22), (255, 255, 255, 255))
-    offset = (round((base - img.size[0]) / 2), round(((base + 22) - img.size[1]) / 2))
+    background = Image.new('RGBA', (base + 30, base + 30), (255, 255, 255, 255))
+    offset = (round(((base + 30) - img.size[0]) / 2), round(((base + 30) - img.size[1]) / 2))
     background.paste(img, offset)
     background.save('./src/temp/temp.png')  # temp image
 
@@ -46,20 +46,22 @@ def pre_process_img(file):
     img = img.astype('float32')
     img = img / 255.0
     img = img.reshape(28, 28, 1)
-    # plt.imshow(img, cmap=plt.get_cmap('gray'))
-    # plt.show()
+    plt.imshow(img, cmap=plt.get_cmap('gray'))
+    plt.show()
     img = img.reshape(1, 28, 28, 1)
     return img
 
 
 def test_images():
-    model = load_model('final_model_4.h5')
-    test = pre_process_img('./src/letters/1_1_1.png')
+    file = './src/letters/1_1_3.png'
+    model = load_model('final_model_letters.h5')
+    trim(file)
+    test = pre_process_img(file)
 
     # A = create_image('A.png')
     print(test.shape)
     out = model.predict_classes(test)
-    print(OUTPUT[out[0]])
+    print(alpha[out[0]])
 
 
 def path_of_imgs(path='./src/letters'):
@@ -76,6 +78,18 @@ def path_of_imgs(path='./src/letters'):
     return paths
 
 
+def trim(file):
+    im = Image.open(file)
+    bg = Image.new(im.mode, im.size, im.getpixel((0, 0)))
+    diff = ImageChops.difference(im, bg)
+    diff = ImageChops.add(diff, diff, 2.0, -100)
+    bbox = diff.getbbox()
+    if bbox:
+        temp = im.crop(bbox)
+        temp.save(file)
+        return im.crop(bbox)
+
+
 def test_list_images(model='final_model_5.h5', img_dir_path='./src/letters'):
     # paths = Path(img_dir_path).glob('*.png')
     paths = path_of_imgs()
@@ -84,6 +98,7 @@ def test_list_images(model='final_model_5.h5', img_dir_path='./src/letters'):
     list_of_out = []
 
     for file in paths:
+        trim(file)
         temp = pre_process_img(file)
         image_arr_list.append(temp)
 
@@ -93,4 +108,3 @@ def test_list_images(model='final_model_5.h5', img_dir_path='./src/letters'):
 
     print(list_of_out)
 
-# test_list_images()

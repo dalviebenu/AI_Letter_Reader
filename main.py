@@ -4,8 +4,8 @@ from segmentation import *
 
 
 def run():
-    segmentation(image='./src/test4.png')
-    test_list_images()
+    segmentation(image='./src/test6.png')
+    test_list_images(model='final_model_5.h5')
 
 
 if __name__ == '__main__':

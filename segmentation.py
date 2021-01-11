@@ -229,11 +229,11 @@ def letter_seg(img, x_lines, i, lines):
         letter_pic = img[i][letters[k][1] - 5:letters[k][1] + letters[k][3] + 5,
                      letters[k][0] - 5:letters[k][0] + letters[k][2] + 5]
         # save it
-        # cv2.imwrite('./src/letters/' + str(i + 1) + '_' + str(word) + '_' + str(letter_i) + '.png',
-                    # 255 - letter_pic)
-
-        cv2.imwrite('./src/letters/' + str(i + 1) + str(word) + str(letter_i) + '.png',
+        cv2.imwrite('./src/letters/' + str(i + 1) + '_' + str(word) + '_' + str(letter_i) + '.png',
                     255 - letter_pic)
+
+        # cv2.imwrite('./src/letters/' + str(i + 1) + str(word) + str(letter_i) + '.png',
+        # 255 - letter_pic)
 
 
 def segmentation(image='./src/name.png'):
