@@ -20,7 +20,7 @@ OUTPUT = {0: '0', 1: '1', 2: '2', 3: '3', 4: '4',
           40: 'f', 41: 'g', 42: 'h', 43: 'n', 44: 'q',
           45: 'r', 46: 't'}
 
-alpha = {0: '1', 1: 'B', 2: 'C', 3: 'D', 4: 'E',
+alpha = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E',
          5: 'F', 6: 'G', 7: 'H', 8: 'I', 9: 'J',
          10: 'K', 11: 'L', 12: 'M', 13: 'N', 14: 'O',
          15: 'P', 16: 'Q', 17: 'R', 18: 'S', 19: 'T',
@@ -81,21 +81,21 @@ def format_data(X, labels):
     labels = labels.reshape(labels.shape[0], 1)
     # One hot encode the labels
     # visualize(trainX, labels)
-    # labels = labels - 1
+    # labels = labels - 1  # for letters data set only
     labels = to_categorical(labels)
 
     return trainX, labels
 
 
 def load_data():
-    # load the emnist dataset from local files
+    # load the letters emnist dataset from local files. Not used any more.
     X, trainY = loadlocal_mnist(
-        images_path='./data/emnist-letters-train-images-idx3-ubyte',
-        labels_path='./data/emnist-letters-train-labels-idx1-ubyte'
+        images_path='./data/emnist-letters-train-images-idx3-ubyte/emnist-letters-train-images-idx3-ubyte',
+        labels_path='./data/emnist-letters-train-labels-idx1-ubyte/emnist-letters-train-labels-idx1-ubyte'
     )
     testx, testY = loadlocal_mnist(
-        images_path='./data/emnist-letters-test-images-idx3-ubyte',
-        labels_path='./data/emnist-letters-test-labels-idx1-ubyte'
+        images_path='./data/emnist-letters-test-images-idx3-ubyte/emnist-letters-test-images-idx3-ubyte',
+        labels_path='./data/emnist-letters-test-labels-idx1-ubyte/emnist-letters-test-labels-idx1-ubyte'
     )
     trainX, trainY = format_data(X, trainY)
     testX, testY = format_data(testx, testY)
@@ -124,10 +124,10 @@ def load_new_data():
 
 
 def create_model():
-    # A CNN to extract features, max pooling to down sample image, 100 node layer to interpret features
-    # and 10 nodes as output
+    # A CNN to extract features, max pooling to down sample image, 1000 node layer to interpret features
+    # and 47 nodes as output
     model = Sequential()
-    model.add(Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_uniform', input_shape=(28, 28, 1)))
+    model.add(Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_uniform', input_shape=(28, 28, 1)))  # input
     model.add(MaxPooling2D((2, 2)))
     # VGG blocks
     model.add(Conv2D(64, (3, 3), padding='same', activation='relu', kernel_initializer='he_uniform'))
@@ -141,7 +141,7 @@ def create_model():
     model.add(Dense(1000, activation='relu', kernel_initializer='he_uniform'))
     model.add(Dropout(0.2))
     model.add(Dense(1000, activation='relu', kernel_initializer='he_uniform'))
-    model.add(Dense(47, activation='softmax'))
+    model.add(Dense(47, activation='softmax'))  # Output layer
     # Gradient Descent learning model
     opt = SGD(lr=0.01, momentum=0.9)
     model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
@@ -187,7 +187,7 @@ def final_model():
     # create, fit, and save model
     model = create_model()
     model.fit(trainX, trainY, validation_data=(testX, testY), epochs=20, batch_size=32, verbose=1)
-    model.save('final_model_5.h5')
+    model.save('final_model_letters.h5')
 
 
 def predict_model(name):
@@ -201,7 +201,7 @@ def predict_model(name):
 
 
 if __name__ == '__main__':
-    # final_model()
-    # predict_model('final_model_4.h5')
-    run_test_harness()
+    final_model()
+    predict_model('final_model_letters.h5')
+    # run_test_harness()
     # load_new_data()

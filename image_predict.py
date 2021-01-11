@@ -4,6 +4,7 @@ from pathlib import Path
 import scipy as sp
 from keras_preprocessing.image import load_img, img_to_array
 from PIL import Image, ImageFilter
+import os
 
 
 def filter_img(img):
@@ -13,7 +14,7 @@ def filter_img(img):
 
 def img_as_array():
     # Loads img, inverts and converts it to an array. Assumes image is black on white
-    img = load_img('test.png', grayscale=True)
+    img = load_img('./src/temp/temp.png', grayscale=True)
     img = np.invert(img)
     img = img_to_array(img)
     return img
@@ -61,21 +62,35 @@ def test_images():
     print(OUTPUT[out[0]])
 
 
-def test_list_images():
-    pathlist = Path('./src/letters').rglob('*.png')
-    model = load_model('final_model_5.h5')
+def path_of_imgs(path='./src/letters'):
+    pathlist = Path(path)
+    paths = []
+
+    stems = [file.stem for file in pathlist.iterdir()]
+    del stems[0]  # .donotdelete
+    stems.sort(key=int)
+
+    for stem in stems:
+        paths.append(path + '/' + stem + '.png')
+
+    return paths
+
+
+def test_list_images(model='final_model_5.h5', img_dir_path='./src/letters'):
+    # paths = Path(img_dir_path).glob('*.png')
+    paths = path_of_imgs()
+    model_inst = load_model(model)
     image_arr_list = []
     list_of_out = []
 
-    for path in pathlist:
-        temp = pre_process_img(path)
+    for file in paths:
+        temp = pre_process_img(file)
         image_arr_list.append(temp)
 
     for test in image_arr_list:
-        out = model.predict_classes(test)
+        out = model_inst.predict_classes(test)
         list_of_out.append(OUTPUT[out[0]])
 
     print(list_of_out)
 
-
-test_list_images()
+# test_list_images()

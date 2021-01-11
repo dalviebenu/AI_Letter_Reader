@@ -202,7 +202,7 @@ def letter_seg(img, x_lines, i, lines):
     """
     img_c = img[i].copy()
     x_l_c = x_lines[i].copy()
-
+    pic_name = 0
     letters = []
 
     contours, hierarchy = cv2.findContours(img_c, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_TC89_KCOS)
@@ -229,19 +229,21 @@ def letter_seg(img, x_lines, i, lines):
         letter_pic = img[i][letters[k][1] - 5:letters[k][1] + letters[k][3] + 5,
                      letters[k][0] - 5:letters[k][0] + letters[k][2] + 5]
         # save it
-        cv2.imwrite('./src/letters/' + str(i + 1) + '_' + str(word) + '_' + str(letter_i) + '.png',
+        # cv2.imwrite('./src/letters/' + str(i + 1) + '_' + str(word) + '_' + str(letter_i) + '.png',
+                    # 255 - letter_pic)
+
+        cv2.imwrite('./src/letters/' + str(i + 1) + str(word) + str(letter_i) + '.png',
                     255 - letter_pic)
 
 
-def segmentation():
-
+def segmentation(image='./src/name.png'):
     print("Start!")
     # clean the directory
     files = glob.glob('./src/letters/*.png')
     for f in files:
         os.remove(f)
     # specify the file location
-    src_img = cv2.imread('./src/test4.png')
+    src_img = cv2.imread(image)
     height, width = src_img.shape[0], src_img.shape[1]
 
     # resize the image
@@ -310,5 +312,4 @@ def segmentation():
     show_images(src_img, bw_img, img_f)
     close_images()
 
-
-segmentation()
+# segmentation()
