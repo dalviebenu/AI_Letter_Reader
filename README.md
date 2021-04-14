@@ -1,1 +1,1 @@
-# KTH-ID1214
+# Neural Network based alphabet recognizer
